@@ -1,0 +1,33 @@
+CREATE TABLE analytics.analytics ON CLUSTER cluster_1
+(
+    `id` UInt32,
+    `company_id` Nullable(String),
+    `device_id` Nullable(String),
+    `session_id` Nullable(String),
+    `video_id` FixedString(24),
+    `player_id` FixedString(24),
+    `started` Nullable(UInt8),
+    `finished` Nullable(UInt8),
+    `converted` Nullable(UInt8),
+    `timed` Nullable(Int32),
+    `created_at` DateTime64(6)
+)
+ENGINE = ReplicatedMergeTree('/clickhouse/tables/{shard}/{database}/table_name', '{replica}')
+PARTITION BY toYYYYMM(created_at)
+ORDER BY created_at;
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+SELECT *
+FROM system.zookeeper
+WHERE path IN ('/', '/clickhouse')
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+CREATE DATABASE postgres
+ENGINE = PostgreSQL('postgres:5432', 'vturb_analytics', 'postgres', 'example');
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+INSERT INTO analytics.analytics
+	SELECT * FROM postgres.analytics

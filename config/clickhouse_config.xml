@@ -7,9 +7,11 @@
         <errorlog>/var/log/clickhouse-server/clickhouse-server.err.log</errorlog>
         <size>1000M</size>
         <count>10</count>
-        <!-- <console>1</console> --> <!-- Default behavior is autodetection (log to console if not daemon mode and is tty) -->
+        <!-- <console>1</console> -->
+        <!-- Default behavior is autodetection (log to console if not daemon mode and is tty) -->
     </logger>
-    <!--display_name>production</display_name--> <!-- It is the name that will be shown in the client -->
+    <!--display_name>production</display_name-->
+    <!-- It is the name that will be shown in the client -->
     <http_port>8123</http_port>
     <tcp_port>9000</tcp_port>
 
@@ -21,7 +23,8 @@
 
     <!-- Used with https_port and tcp_port_secure. Full ssl options list: https://github.com/ClickHouse-Extras/poco/blob/master/NetSSL_OpenSSL/include/Poco/Net/SSLManager.h#L71 -->
     <openSSL>
-        <server> <!-- Used for https server AND secure tcp port -->
+        <server>
+            <!-- Used for https server AND secure tcp port -->
             <!-- openssl req -subj "/CN=localhost" -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout /etc/clickhouse-server/server.key -out /etc/clickhouse-server/server.crt -->
             <certificateFile>/etc/clickhouse-server/server.crt</certificateFile>
             <privateKeyFile>/etc/clickhouse-server/server.key</privateKeyFile>
@@ -34,7 +37,8 @@
             <preferServerCiphers>true</preferServerCiphers>
         </server>
 
-        <client> <!-- Used for connecting to https dictionary source -->
+        <client>
+            <!-- Used for connecting to https dictionary source -->
             <loadDefaultCAFile>true</loadDefaultCAFile>
             <cacheSessions>true</cacheSessions>
             <disableProtocols>sslv2,sslv3</disableProtocols>
@@ -66,7 +70,7 @@
     <!-- Listen specified host. use :: (wildcard IPv6 address), if you want to accept connections both with IPv4 and IPv6 from everywhere. -->
     <!-- <listen_host>::</listen_host> -->
     <!-- Same for hosts with disabled ipv6: -->
-    <!-- <listen_host>0.0.0.0</listen_host> -->
+    <listen_host>0.0.0.0</listen_host>
 
     <!-- Default values - try listen localhost on ipv4 and ipv6: -->
     <!--
@@ -148,7 +152,7 @@
     <!-- Configuration of clusters that could be used in Distributed tables.
          https://clickhouse.yandex/docs/en/table_engines/distributed/
       -->
-    <remote_servers incl="clickhouse_remote_servers" >
+    <remote_servers incl="clickhouse_remote_servers">
         <!-- Test only shard config for testing distributed storage -->
         <test_shard_localhost>
             <shard>
@@ -175,12 +179,13 @@
          Values for substitutions are specified in /yandex/name_of_substitution elements in that file.
       -->
     <include_from>/etc/clickhouse-server/metrika.xml</include_from>
+    <!-- <include_from>/etc/clickhouse-server/keeper.xml</include_from> -->
     <!-- ZooKeeper is used to store metadata about replicas, when using Replicated tables.
          Optional. If you don't use replicated tables, you could omit that.
 
          See https://clickhouse.yandex/docs/en/table_engines/replication/
       -->
-    <zookeeper incl="zookeeper-servers" optional="true" />
+    <zookeeper incl="zookeeper" optional="true" />
 
     <!-- Substitutions for parameters of replicated tables.
           Optional. If you don't use replicated tables, you could omit that.
@@ -288,7 +293,7 @@
          Don't do that if you just started using ClickHouse.
       -->
     <compression incl="clickhouse_compression">
-    <!--
+        <!--
         <!- - Set of variants. Checked in order. Last matching case wins. If nothing matches, lz4 will be used. - ->
         <case>
 
@@ -368,4 +373,3 @@
     <!-- Uncomment to disable ClickHouse internal DNS caching. -->
     <!-- <disable_internal_dns_cache>1</disable_internal_dns_cache> -->
 </yandex>
-
